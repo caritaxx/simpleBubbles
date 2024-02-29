@@ -1,0 +1,62 @@
+int numParticles = 200;
+Particle[] particles = new Particle[numParticles];
+
+void setup() {
+  size(800, 600);
+  for (int i = 0; i < numParticles; i++) {
+    particles[i] = new Particle();
+  }
+}
+
+void draw() {
+  background(221, 234, 224);
+  for (int i = 0; i < numParticles; i++) {
+    particles[i].update();
+    particles[i].display();
+  }
+}
+class Particle {
+  float x, y;
+  float radius;
+  float speedX, speedY;
+
+  Particle() {
+    float distance = random(100, 200); // mouse initial distance for further apart
+    float angle = random(TWO_PI); // random angle
+    x = mouseX + random(-50, 50);
+    y = mouseY + random(-50, 50);
+    radius = random(5, 15);
+    speedX = random(-2, 2);
+    speedY = random(-2, 2);
+  }
+
+  void update() {
+    x += speedX;
+    y += speedY;
+
+    if (dist(x, y, mouseX, mouseY) > 50) {
+      float angle = atan2(mouseY - y, mouseX - x);
+      speedX += cos(angle) * 0.2; // particle towards mouse
+      speedY += sin(angle) * 0.2;
+    }
+
+    speedX *= 0.98;
+    speedY *= 0.98;
+  }
+
+  void display() {
+    noStroke();
+    fill(255, 150);
+    stroke(0);
+    strokeWeight(1);
+    ellipse(x, y, radius * 2, radius * 2);
+  }
+}
+
+void mouseMoved() {
+  for (int i = 0; i < numParticles; i++) {
+    float angle = atan2(mouseY - particles[i].y, mouseX - particles[i].x);
+    particles[i].speedX += cos(angle) * 0.5;
+    particles[i].speedY += sin(angle) * 0.5;
+  }
+}
